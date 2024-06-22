@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import Archive from './archives/archive.js';
 import ArchiveEntry from './archives/archiveEntry.js';
-import ArchiveFile from './archives/archiveFile.js';
+import Chd from './archives/chd/chd.js';
 import Gzip from './archives/gzip.js';
 import Rar from './archives/rar.js';
 import SevenZip from './archives/sevenZip.js';
@@ -86,6 +86,8 @@ export default class FileFactory {
       archive = new ZipSpanned(filePath);
     } else if (ZipX.getExtensions().some((ext) => filePath.toLowerCase().endsWith(ext))) {
       archive = new ZipX(filePath);
+    } else if (Chd.getExtensions().some((ext) => filePath.toLowerCase().endsWith(ext))) {
+      archive = new Chd(filePath);
     } else {
       throw new Error(`unknown archive type: ${path.extname(filePath)}`);
     }
@@ -113,6 +115,7 @@ export default class FileFactory {
       ...Z.getFileSignatures(),
       ...ZipSpanned.getFileSignatures(),
       ...ZipX.getFileSignatures(),
+      ...Chd.getFileSignatures(),
     ].reduce((max, signature) => Math.max(max, signature.length), 0);
 
     let fileSignature: Buffer;
@@ -163,6 +166,10 @@ export default class FileFactory {
       .some((sig) => fileSignature.subarray(0, sig.length).equals(sig))
     ) {
       archive = new ZipX(filePath);
+    } else if (Chd.getFileSignatures()
+      .some((sig) => fileSignature.subarray(0, sig.length).equals(sig))
+    ) {
+      archive = new Chd(filePath);
     } else {
       return undefined;
     }
@@ -181,6 +188,7 @@ export default class FileFactory {
       ...Z.getExtensions(),
       ...ZipSpanned.getExtensions(),
       ...ZipX.getExtensions(),
+      ...Chd.getExtensions(),
     ].some((ext) => filePath.toLowerCase().endsWith(ext));
   }
 }

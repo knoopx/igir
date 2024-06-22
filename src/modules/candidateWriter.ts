@@ -347,7 +347,8 @@ export default class CandidateWriter extends Module {
       await outputZip.createArchive(inputToOutputZipEntries);
     } catch (error) {
       this.progressBar.logError(`${dat.getNameShort()}: ${releaseCandidate.getName()}: ${outputZip.getFilePath()}: failed to create zip: ${error}`);
-      return false;
+      throw error
+      // return false;
     }
 
     this.progressBar.logTrace(`${dat.getNameShort()}: ${releaseCandidate.getName()}: ${outputZip.getFilePath()}: wrote ${inputToOutputZipEntries.length.toLocaleString()} archive entr${inputToOutputZipEntries.length !== 1 ? 'ies' : 'y'}`);
