@@ -132,23 +132,23 @@ export default class Chd extends Archive {
         });
       } else if (info.type === CHDType.CD_ROM) {
         const cueFile = `${this.tempSingletonFilePath}.cue`;
-        // await chdman.extractCd({
-        //   // inputParentFilename
-        //   inputFilename: this.getFilePath(),
-        //   outputFilename: cueFile,
-        //   outputBinFilename: `${this.tempSingletonFilePath}.bin`,
-        // });
-        await ChdmanBin.run([
-          "extractcd",
-          "--output",
-          cueFile,
-          "--outputbin",
-          `${this.tempSingletonFilePath}-%t`,
-          "--input",
-          this.getFilePath(),
-          "--splitbin",
-          // '--inputparent', inputParentFilename,
-        ]);
+        await chdman.extractCd({
+          // inputParentFilename
+          inputFilename: this.getFilePath(),
+          outputFilename: cueFile,
+          outputBinFilename: `${this.tempSingletonFilePath}.bin`,
+        });
+        // await ChdmanBin.run([
+        //   "extractcd",
+        //   "--output",
+        //   cueFile,
+        //   "--outputbin",
+        //   `${this.tempSingletonFilePath}-%t`,
+        //   "--input",
+        //   this.getFilePath(),
+        //   "--splitbin",
+        //   // '--inputparent', inputParentFilename,
+        // ]);
         await FsPoly.rm(cueFile, { force: true });
       } else if (info.type === CHDType.GD_ROM) {
         this.tempSingletonFilePath = path.join(
